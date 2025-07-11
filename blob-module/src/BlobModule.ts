@@ -4,9 +4,9 @@ import { Blob } from "./BlobModule.types";
 const NativeBlobModule: any = requireNativeModule("ExpoBlob");
 
 export class ExpoBlob extends NativeBlobModule.Blob implements Blob {
-	constructor(blob: string[], options?: BlobPropertyBag, other?: ExpoBlob) {
-		super(blob, options, other)
-	}
+	// constructor(blob: string[], options?: BlobPropertyBag, other?: ExpoBlob) {
+	// 	super(blob, options, other)
+	// }
 	
 	// constructor(blob: string[]) {
 	// 	super(blob)
@@ -20,9 +20,9 @@ export class ExpoBlob extends NativeBlobModule.Blob implements Blob {
 		return super.opt(options);
 	}
 
-	// constructor(blobParts?: any, options?: BlobPropertyBag) {
-	// 	super(blobParts, options);
-	// }
+	constructor(blobParts?: any, options?: BlobPropertyBag) {
+		super(blobParts, options);
+	}
 
 	// constructor(blob? : String | number | Blob[]) {
 	// 	super(blob)
@@ -38,7 +38,6 @@ export class ExpoBlob extends NativeBlobModule.Blob implements Blob {
 
 	slice(start?: number, end?: number, contentType?: string): Blob {
 		return new ExpoBlob([], null, super.slice(start, end, contentType))
-		return super.slice(start, end, contentType)
 	}
 
 	// either(sth : number | string): number | string {

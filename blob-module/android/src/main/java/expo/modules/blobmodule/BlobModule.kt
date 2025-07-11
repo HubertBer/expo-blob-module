@@ -10,7 +10,23 @@ class BlobModule : Module() {
         Name("ExpoBlob")
 
         Class(Blob::class) {
-            Constructor() { blob: List<String>, options: BlobOptionsBag?, other : Blob? ->
+//            Constructor() { blob: List<String>, options: BlobOptionsBag?, other : Blob? ->
+//                var type = BlobOptions().type
+//                var endings = BlobOptions().endings
+//
+//                if (options != null) {
+//                    type = options.type
+//                    endings = options.endings
+//                }
+//
+//                if (other == null) {
+//                    Blob(blob, BlobOptions(type, endings))
+//                } else {
+//                    Blob(other.blob, other.options)
+//                }
+//            }
+
+            Constructor() { blobParts: List<String>, options: BlobOptionsBag?->
                 var type = BlobOptions().type
                 var endings = BlobOptions().endings
 
@@ -18,12 +34,7 @@ class BlobModule : Module() {
                     type = options.type
                     endings = options.endings
                 }
-
-                if (other == null) {
-                    Blob(blob, BlobOptions(type, endings))
-                } else {
-                    Blob(other.blob, other.options)
-                }
+                Blob(blobParts, BlobOptions(type, endings))
             }
 
             Property("size") { blob: Blob ->
