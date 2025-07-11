@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { ExpoBlob as Blob } from "blob-module";
 
@@ -8,16 +8,28 @@ export function CreateBlobTestComponent() {
 		type: "test/plain",
 		endings: "native",
 	});
+	
+	// const blob = new Blob([new Blob(), new Blob()]);
+	// const blob = new Blob()
+	// const blob = new Blob(1)
+	// const blob = new Blob(["222e1fsfsa", "agagaeggahjkabe2"])
 
-	blob?.text().then((text) => {
-		setBlobText(text);
-	});
+
+	// const blob = new Blob();
+	useEffect(() => {
+		blob?.text().then((text) => {
+			setBlobText(text);
+		});
+	}, [])
+
 
 	return (
 		<View style={styles.container}>
 			<Text>Size: {blob?.size}</Text>
 			<Text>Type: {blob?.type}</Text>
 			<Text>Text: {blobText}</Text>
+			<Text>{blob?.test()}</Text>
+			<Text></Text>
 		</View>
 	);
 }

@@ -12,6 +12,8 @@ export function SliceBlobTestComponent() {
 	});
 
 	const slicedBlob = blob.slice(0, 8);
+	// const slicedBlob = blob.me()
+	console.log(slicedBlob)
 
 	slicedBlob.text().then((text) => {
 		setSlicedBlobText(text);
