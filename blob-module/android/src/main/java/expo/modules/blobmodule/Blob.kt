@@ -1,14 +1,14 @@
 package expo.modules.blobmodule
 
+import android.util.Log
 import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
 import expo.modules.kotlin.sharedobjects.SharedObject
 import expo.modules.kotlin.types.Either
 
-
 class Blob() : SharedObject() {
 //    var blob: List<String> = listOf()
-    var blobParts: List<BlobPart> = listOf()
+    var blobParts: List<InternalBlobPart> = listOf()
     var size : Int = 0
     var options : BlobOptions = BlobOptions()
 
@@ -37,7 +37,7 @@ class Blob() : SharedObject() {
 //        return strings.toList()
 //    }
 
-    constructor(blobParts: List<BlobPart>, options: BlobOptions = BlobOptions()) : this() {
+    constructor(blobParts: List<InternalBlobPart>, options: BlobOptions = BlobOptions()) : this() {
         this.blobParts = blobParts
         this.options = options
 
@@ -66,7 +66,7 @@ class Blob() : SharedObject() {
 //        return this.substring(s, e)
 //    }
 
-    private fun BlobPart.offsetSlice(start: Int, end: Int, offset: Int): BlobPart {
+    private fun InternalBlobPart.offsetSlice(start: Int, end: Int, offset: Int): InternalBlobPart {
         var s : Int = start - offset
         var e : Int = end - offset
         if (s < 0) {
@@ -76,6 +76,11 @@ class Blob() : SharedObject() {
             e = this.size()
         }
 
+        if(this.type == BlobPartType.BLOB) {
+            return InternalBlobPart(null, this.blob?.slice(s, e, null), BlobPartType.BLOB)
+        } else {
+            return InternalBlobPart(str?.substring(s, e) ?: "", null, BlobPartType.STRING)
+        }
 //        if (this.`is`(String::class)) {
 //            this.get(String::class).let {
 //                return Either(
@@ -84,7 +89,7 @@ class Blob() : SharedObject() {
 //                )
 //            }
 //        }
-        return this
+//        return this
 
 //        return BlobPart(Blob(listOf("string")))
 //        return BlobPart(string?.substring(s, e) ?: "")
@@ -92,7 +97,7 @@ class Blob() : SharedObject() {
 
     fun slice(start: Int, end: Int, contentType: String?): Blob {
         var i : Int = 0
-        var bps : MutableList<BlobPart> = mutableListOf()
+        var bps : MutableList<InternalBlobPart> = mutableListOf()
 
         for ( bp in blobParts ) {
             if (i + bp.size() <= start) {
@@ -116,26 +121,41 @@ class Blob() : SharedObject() {
 //}
 
 typealias BlobPart = Either<String, Blob>
-fun BlobPart.size() : Int {
+
+fun BlobPart.internal(): InternalBlobPart {
     if (this.`is`(String::class)) {
         this.get(String::class).let {
-            return it.length
+            return InternalBlobPart(
+                it,
+                null,
+                BlobPartType.STRING
+            )
         }
     } else {
         this.get(Blob::class).let {
-            return it.size
+            Log.d("BP", "Internal blob cast")
+
+            return InternalBlobPart(
+                null,
+                it,
+                BlobPartType.BLOB
+            )
         }
     }
 }
-fun BlobPart.text() : String {
-    if (this.`is`(String::class)) {
-        this.get(String::class).let {
-            return it
-        }
+
+fun InternalBlobPart.size() : Int {
+    if (this.type == BlobPartType.BLOB) {
+        return blob?.size ?: 0
     } else {
-        this.get(Blob::class).let {
-            return it.text()
-        }
+        return str?.length ?: 0
+    }
+}
+fun InternalBlobPart.text() : String {
+    if (this.type == BlobPartType.BLOB) {
+        return blob?.text() ?: ""
+    } else {
+        return str ?: ""
     }
 }
 //class BlobPart(val string : String?) {

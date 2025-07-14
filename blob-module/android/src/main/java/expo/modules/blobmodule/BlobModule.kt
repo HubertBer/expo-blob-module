@@ -1,5 +1,6 @@
 package expo.modules.blobmodule
 
+import android.util.Log
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.types.Either
@@ -34,7 +35,13 @@ class BlobModule : Module() {
                     type = options.type
                     endings = options.endings
                 }
-                Blob(blobParts, BlobOptions(type, endings))
+                var ibps : MutableList<InternalBlobPart> = mutableListOf()
+                for (bp in blobParts) {
+                    Log.d("BP", "blob part internal")
+                    ibps.add(bp.internal())
+                }
+
+                Blob(ibps, BlobOptions(type, endings))
             }
             Property("size") { blob: Blob ->
                 blob.size
