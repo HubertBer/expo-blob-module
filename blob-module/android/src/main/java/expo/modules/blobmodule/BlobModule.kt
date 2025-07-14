@@ -11,22 +11,6 @@ class BlobModule : Module() {
         Name("ExpoBlob")
 
         Class(Blob::class) {
-//            Constructor() { blob: List<String>, options: BlobOptionsBag?, other : Blob? ->
-//                var type = BlobOptions().type
-//                var endings = BlobOptions().endings
-//
-//                if (options != null) {
-//                    type = options.type
-//                    endings = options.endings
-//                }
-//
-//                if (other == null) {
-//                    Blob(blob, BlobOptions(type, endings))
-//                } else {
-//                    Blob(other.blob, other.options)
-//                }
-//            }
-
             Constructor() { blobParts: List<BlobPart>, options: BlobOptionsBag?->
                 var type = BlobOptions().type
                 var endings = BlobOptions().endings
@@ -35,14 +19,9 @@ class BlobModule : Module() {
                     type = options.type
                     endings = options.endings
                 }
-                var ibps : MutableList<InternalBlobPart> = mutableListOf()
-                for (bp in blobParts) {
-                    Log.d("BP", "blob part internal")
-                    ibps.add(bp.internal())
-                }
-
-                Blob(ibps, BlobOptions(type, endings))
+                Blob(blobParts.internal(), BlobOptions(type, endings))
             }
+
             Property("size") { blob: Blob ->
                 blob.size
             }
@@ -55,16 +34,9 @@ class BlobModule : Module() {
                 blob.options.type
             }
 
-            Function("test") { blob: Blob ->
-                "test"
-            }
-            Function("opt") { blob: Blob, options : BlobOptionsBag ->
-                "${options.type}  ${options.endings}"
-            }
             Function("slice") { blob: Blob, start: Int?, end: Int?, contentType: String? ->
                 blob.slice(start ?: 0, end ?: blob.size, contentType ?: "")
             }
-            Function("me") {blob:Blob -> blob}
         }
     }
 }

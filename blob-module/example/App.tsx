@@ -3,7 +3,6 @@ import { TestContainer } from "./components/TestContainer";
 import { CreateBlobTestComponent } from "./components/CreateBlobTest";
 import { SliceBlobTestComponent } from "./components/SliceBlobTest";
 import { StreamBlobTestComponent } from "./components/StreamBlobTest";
-import WeirdFunctionsTest from "./components/WeirdFunctions";
 
 export default function App() {
 	return (
@@ -19,9 +18,6 @@ export default function App() {
 					</TestContainer>
 					<TestContainer title={"Stream Blob Test"}>
 						<StreamBlobTestComponent />
-					</TestContainer>
-					<TestContainer title={"Weird functions"}>
-						<WeirdFunctionsTest />
 					</TestContainer>
 				</View>
 			</ScrollView>
