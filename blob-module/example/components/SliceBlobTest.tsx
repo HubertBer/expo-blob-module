@@ -2,22 +2,27 @@ import { useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { ExpoBlob as Blob } from "blob-module";
 
+
+const blob = new Blob(["aaa", "bbbb", "ccccc", "dddddddddd"], {
+	type: "test/plain",
+	endings: "native",
+});
+const slicedBlob = blob.slice(0, 8);
+
+
 export function SliceBlobTestComponent() {
 	const [blobText, setBlobText] = useState<string | null>(null);
 	const [slicedBlobText, setSlicedBlobText] = useState<string | null>(null);
 
-	const blob = new Blob(["aaa", "bbbb", "ccccc", "dddddddddd"], {
-		type: "test/plain",
-		endings: "native",
-	});
-
-	const slicedBlob = blob.slice(0, 8);
 	// const slicedBlob = blob.me()
-	console.log(slicedBlob)
+	console.log("a",slicedBlob)
 
 	slicedBlob.text().then((text) => {
+		console.log({text})
 		setSlicedBlobText(text);
 	});
+
+	// setSlicedBlobText(slicedBlob.text())
 
 	blob.text().then((text) => {
 		setBlobText(text);
@@ -29,6 +34,7 @@ export function SliceBlobTestComponent() {
 			<Text>Type: {blob?.type}</Text>
 			<Text>Text before slice: {blobText}</Text>
 			<Text>Text after slice [0-8]: {slicedBlobText}</Text>
+			<Text>Slice size: {slicedBlob?.size}</Text>
 		</View>
 	);
 }

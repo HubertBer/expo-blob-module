@@ -28,6 +28,14 @@ class Blob() : SharedObject() {
         return bp
     }
 
+    fun List<BlobPart>.toStrings(): List<String> {
+        val strings : MutableList<String> = mutableListOf()
+        for (bp in this) {
+            strings.add(bp.text())
+        }
+        return strings.toList()
+    }
+
     constructor(strings: List<String>, options: BlobOptions = BlobOptions()) : this() {
         this.blobParts = strings.toBlobParts()
         this.options = options
@@ -70,8 +78,10 @@ class Blob() : SharedObject() {
     }
 
     fun slice(start: Int, end: Int, contentType: String?): Blob {
+//        return Blob(listOf("Slice", "TEST"))
+
         var i : Int = 0
-        var strings : MutableList<BlobPart> = mutableListOf()
+        var bps : MutableList<BlobPart> = mutableListOf()
 
         for ( bp in blobParts ) {
             if (i + bp.size() <= start) {
@@ -81,11 +91,11 @@ class Blob() : SharedObject() {
             if (i >= end) {
                 break
             }
-            strings.add(bp.offsetSlice(start, end, i))
+            bps.add(bp.offsetSlice(start, end, i))
             i += bp.size()
         }
 
-        return Blob())
+        return Blob(bps.toStrings())
     }
 }
 

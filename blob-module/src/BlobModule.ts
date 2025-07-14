@@ -13,11 +13,11 @@ export class ExpoBlob extends NativeBlobModule.Blob implements Blob {
 	// }
 
 	test(): string {
-		return super.test();
+		return super.test()
 	}
 
 	opt(options : BlobPropertyBag) {
-		return super.opt(options);
+		return super.opt(options)
 	}
 
 	constructor(blobParts?: any, options?: BlobPropertyBag) {
@@ -37,7 +37,10 @@ export class ExpoBlob extends NativeBlobModule.Blob implements Blob {
 	}
 
 	slice(start?: number, end?: number, contentType?: string): Blob {
-		return new ExpoBlob([], null, super.slice(start, end, contentType))
+		// return new ExpoBlob([], null, super.slice(start, end, contentType))
+		const s = super.slice(start, end, contentType);
+
+		return s
 	}
 
 	// either(sth : number | string): number | string {
@@ -53,8 +56,9 @@ export class ExpoBlob extends NativeBlobModule.Blob implements Blob {
 	// 	return new ExpoBlob(slicedBlob, options);
 	// }
 
+	// @ts-expect-error
 	async text(): Promise<string> {
-		return Promise.resolve(super.text());
+		return (super.text());
 	}
 
 	stream(): ReadableStream {

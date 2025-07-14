@@ -36,12 +36,11 @@ class BlobModule : Module() {
                 }
                 Blob(blobParts, BlobOptions(type, endings))
             }
-
             Property("size") { blob: Blob ->
                 blob.size
             }
 
-            Function("text") { blob: Blob ->
+            AsyncFunction("text") { blob: Blob ->
                 blob.text()
             }
 
