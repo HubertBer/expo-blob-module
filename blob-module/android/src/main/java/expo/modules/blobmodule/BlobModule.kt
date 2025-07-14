@@ -26,7 +26,7 @@ class BlobModule : Module() {
 //                }
 //            }
 
-            Constructor() { blobParts: List<String>, options: BlobOptionsBag?->
+            Constructor() { blobParts: List<BlobPart>, options: BlobOptionsBag?->
                 var type = BlobOptions().type
                 var endings = BlobOptions().endings
 

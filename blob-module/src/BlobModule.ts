@@ -20,7 +20,7 @@ export class ExpoBlob extends NativeBlobModule.Blob implements Blob {
 		return super.opt(options)
 	}
 
-	constructor(blobParts?: any, options?: BlobPropertyBag) {
+	constructor(blobParts?: (string | Blob)[], options?: BlobPropertyBag) {
 		super(blobParts, options);
 	}
 

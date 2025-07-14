@@ -3,6 +3,7 @@ package expo.modules.blobmodule
 import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
 import expo.modules.kotlin.sharedobjects.SharedObject
+import expo.modules.kotlin.types.Either
 
 
 class Blob() : SharedObject() {
@@ -20,24 +21,24 @@ class Blob() : SharedObject() {
 //        }
 //    }
 
-    private fun List<String>.toBlobParts(): List<BlobPart> {
-        val bp : MutableList<BlobPart> = mutableListOf()
-        for (s in this) {
-             bp.add(BlobPart(s))
-        }
-        return bp
-    }
+//    private fun List<String>.toBlobParts(): List<BlobPart> {
+//        val bp : MutableList<BlobPart> = mutableListOf()
+//        for (s in this) {
+//             bp.add(BlobPart(s))
+//        }
+//        return bp
+//    }
+//
+//    fun List<BlobPart>.toStrings(): List<String> {
+//        val strings : MutableList<String> = mutableListOf()
+//        for (bp in this) {
+//            strings.add(bp.text())
+//        }
+//        return strings.toList()
+//    }
 
-    fun List<BlobPart>.toStrings(): List<String> {
-        val strings : MutableList<String> = mutableListOf()
-        for (bp in this) {
-            strings.add(bp.text())
-        }
-        return strings.toList()
-    }
-
-    constructor(strings: List<String>, options: BlobOptions = BlobOptions()) : this() {
-        this.blobParts = strings.toBlobParts()
+    constructor(blobParts: List<BlobPart>, options: BlobOptions = BlobOptions()) : this() {
+        this.blobParts = blobParts
         this.options = options
 
         for (bp in blobParts) {
@@ -74,12 +75,22 @@ class Blob() : SharedObject() {
         if (e > this.size()) {
             e = this.size()
         }
-        return BlobPart(string?.substring(s, e) ?: "")
+
+//        if (this.`is`(String::class)) {
+//            this.get(String::class).let {
+//                return Either(
+//                    it.substring(s, e)
+//
+//                )
+//            }
+//        }
+        return this
+
+//        return BlobPart(Blob(listOf("string")))
+//        return BlobPart(string?.substring(s, e) ?: "")
     }
 
     fun slice(start: Int, end: Int, contentType: String?): Blob {
-//        return Blob(listOf("Slice", "TEST"))
-
         var i : Int = 0
         var bps : MutableList<BlobPart> = mutableListOf()
 
@@ -95,19 +106,55 @@ class Blob() : SharedObject() {
             i += bp.size()
         }
 
-        return Blob(bps.toStrings())
+        return Blob(bps)
     }
 }
+//
+//class BlobPart(@Field val string : String?) : Record {
+//    fun size(): Int = string?.length ?: 0
+//    fun text(): String = string ?: ""
+//}
 
-class BlobPart(@Field val string : String?) : Record {
-    fun size(): Int = string?.length ?: 0
-    fun text(): String = string ?: ""
+typealias BlobPart = Either<String, Blob>
+fun BlobPart.size() : Int {
+    if (this.`is`(String::class)) {
+        this.get(String::class).let {
+            return it.length
+        }
+    } else {
+        this.get(Blob::class).let {
+            return it.size
+        }
+    }
 }
+fun BlobPart.text() : String {
+    if (this.`is`(String::class)) {
+        this.get(String::class).let {
+            return it
+        }
+    } else {
+        this.get(Blob::class).let {
+            return it.text()
+        }
+    }
+}
+//class BlobPart(val string : String?) {
+//    fun size(): Int = string?.length ?: 0
+//    fun text(): String = string ?: ""
+//}
 
 enum class EndingType(val str : String = "transparent") {
     TRANSPARENT("transparent"),
     NATIVE("native"),
 }
+
+
+enum class BlobPartType {
+    STRING,
+    BLOB,
+}
+
+class InternalBlobPart(val str: String?, val blob: Blob?, val type: BlobPartType) {}
 
 data class BlobOptions(val type: String = "", val endings : EndingType = EndingType.TRANSPARENT)
 
